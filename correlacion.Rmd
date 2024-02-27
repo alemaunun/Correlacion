@@ -2,7 +2,10 @@
 title: "correlacion"
 author: "Mau"
 date: "2024-02-26"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -45,7 +48,7 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...) {
   usr <- par("usr")
   on.exit(par(usr)) 
   par(usr = c(0, 1, 0, 1))
-  Cor <- abs(cor(x, y)) # Elimina la función abs si lo prefieres 
+  Cor <- abs(cor(x, y))
   txt <- paste0(prefix, format(c(Cor, 0.123456789), digits = digits) [1])
   if(missing(cex.cor)) {
     cex.cor <- 0.4/ strwidth(txt)
@@ -112,6 +115,7 @@ correlacion.dist_ncuentas <- correlation(dist_ncuentas)
 correlacion.dist_ncuentas
 ```
 El coeficiente de correlacion nos indica que existe una relacion lineal inversa quasiperfecta ya que se encuenra proximo a un -1. Los valores de intercalo de condianza del 95% muestran el intervalo (de valores) para el coeficiente de correlacion [-0.98, -0.71]. Atendiendo a los valores "P" podemos afirmar que la correlacion es significativa ya que el p-value (0.001) es inferior al nivel de sifnificacncia (0.05). 
+Por lo que resulta estadísticamente significativa.
 
 6e.
 ```{r}
@@ -124,7 +128,7 @@ Observamos como a mayor distancia encontramos un menor número de cuentas.
 
 6f: Dirección negativa. A medida que aumenta la distancia disminuye el número de cuentas
 
-6g: el muestreo (n=10) es suficiente para suponer que existe una relación
+6g: el muestreo (n=10) no es suficiente para suponer que podemos extraer una conclusión válida para nuestra hipótesis. En estadística se trabaja con cientos o miles de datos.
 
 
 
