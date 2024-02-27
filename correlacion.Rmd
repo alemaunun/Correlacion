@@ -1,0 +1,130 @@
+---
+title: "correlacion"
+author: "Mau"
+date: "2024-02-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Añadimos el dataset
+```library(readxl)```
+
+```{r echo=TRUE}
+data <- as.data.frame(data)
+data
+```
+
+
+```{r}
+ #Función para agregar coeficientes de correlación
+
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...) {
+  usr <- par("usr")
+  on.exit(par(usr)) 
+  par(usr = c(0, 1, 0, 1))
+  Cor <- abs(cor(x, y)) # Elimina la función abs si lo prefieres 
+  txt <- paste0(prefix, format(c(Cor, 0.123456789), digits = digits) [1])
+  if(missing(cex.cor)) {
+    cex.cor <- 0.4/ strwidth(txt)
+  }
+  text(0.5, 0.5, txt,
+       cex = 1 + cex.cor * Cor) #Escala el texto al nivel de correlación
+}
+
+#Dibujamos la matriz de correlación
+pairs(data,
+       upper.panel = panel.cor,
+       lower.panel = panel.smooth)
+```
+```{r echo=TRUE}
+cor.test(data$longitud, data$peso)
+```
+hay una probabilidad del 95% de que la correlación no se deba al azar, para comprobarlo hay el valor de p (nivel de significación) debe ser menos a 0'05, en este caso lo es.
+la correlacion debe ser entre 0 y 1, siendo una correlación perfecta de 1
+
+```{r}
+library(correlation)
+resultados <- correlation(data)
+resultados
+```
+ejercicio 4: visualizar graficamente la correlacion lineal existente entre las variables "longitud" y "peso"
+```{r echo =TRUE}
+library(ggpubr)
+ggscatter(data, x = "longitud", y = "peso",
+          add = "reg.line", conf.int = T,
+          cor.coef = T, cor.method = "pearson",
+          xlab = "longitud piezas (mm)", ylab = "peso piezas (mm)")
+```
+
+ejercicio 5: combinacion de funciones "corrplot()" y "cor()"
+```{r}
+library(corrplot)
+corrplot(cor(data))
+```
+
+```{r}
+corrplot.mixed(cor(data))
+```
+ejercicio 6
+
+```{r}
+distancia <- c(1.1,100.2,90.3,5.4,57.5,6.6,34.7,65.8,57.9,86.1)
+n_piezas <- c(110,2,6,98,40,94,31,5,8,10)
+dist_ncuentas <- data.frame(distancia,n_piezas)
+knitr::kable(dist_ncuentas)
+```
+6b.
+```{r}
+pairs(dist_ncuentas,
+       upper.panel = panel.cor,
+       lower.panel = panel.smooth)
+```
+6.c
+```{r echo=TRUE}
+cor.test(dist_ncuentas$distancia, dist_ncuentas$n_piezas)
+```
+6d
+```{r}
+correlacion.dist_ncuentas <- correlation(dist_ncuentas)
+correlacion.dist_ncuentas
+```
+El coeficiente de correlacion nos indica que existe una relacion lineal inversa quasiperfecta ya que se encuenra proximo a un -1. Los valores de intercalo de condianza del 95% muestran el intervalo (de valores) para el coeficiente de correlacion [-0.98, -0.71]. Atendiendo a los valores "P" podemos afirmar que la correlacion es significativa ya que el p-value (0.001) es inferior al nivel de sifnificacncia (0.05). 
+
+6e.
+```{r}
+ggscatter(dist_ncuentas, x = "distancia", y = "n_piezas",
+          add = "reg.line", conf.int = T,
+          cor.coef = T, cor.method = "pearson",
+          xlab = "distancia", ylab = "numero cuentas")
+```
+Observamos como a mayor distancia encontramos un menor número de cuentas.
+
+6f: Dirección negativa. A medida que aumenta la distancia disminuye el número de cuentas
+
+6g: el muestreo (n=10) es suficiente para suponer que existe una relación
+
+
+
